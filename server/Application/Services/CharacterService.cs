@@ -5,20 +5,20 @@ namespace Application.Services
 {
     public class CharacterService
     {
-        private void UpdateRatings(Character character)
+        public void UpdateRatings(Character character)
         {
-            var ownRating = character.Reviews
+            var ownRatings = character.Reviews
                 .Where(x => x.Type == ReviewType.OwnFraction)
                 .Select(x => x.Rating)
-                .Average();
+                .ToList();
 
-            var enemyRating = character.Reviews
+            var enemyRatings = character.Reviews
                 .Where(x => x.Type == ReviewType.EnemyFraction)
                 .Select(x => x.Rating)
-                .Average();
+                .ToList();
 
-            character.OwnFractionRating = ownRating;
-            character.EnemyFractionRating = enemyRating;
+            character.OwnFractionRating = ownRatings.Count > 0 ? ownRatings.Average() : 0;
+            character.EnemyFractionRating = enemyRatings.Count > 0 ? enemyRatings.Average() : 0;
         }
     }
 }

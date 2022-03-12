@@ -20,5 +20,12 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new CreateReviewCommand { CharacterId = characterId, Dto = dto }));
         }
+
+        [Authorize("IsReviewAuthor")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateReview(Guid id, UpdateReviewDto dto)
+        {
+            return HandleResult(await Mediator.Send(new UpdateReviewCommand { Id = id, Dto = dto }));
+        }
     }
 }

@@ -1,6 +1,8 @@
 using System.Text;
 using Application.Contracts.Identity;
 using Domain;
+using Identity.Policies.Handlers;
+using Identity.Policies.Requirements;
 using Identity.Services;
 using Infrastructure.Security.Policies.Handlers;
 using Infrastructure.Security.Policies.Requirements;
@@ -46,12 +48,17 @@ namespace Identity
                 {
                     policy.AddRequirements(new CharacterCreatorRequirement());
                 });
+                opt.AddPolicy("IsReviewAuthor", policy =>
+                {
+                    policy.AddRequirements(new ReviewCreatorRequirement());
+                });
             });
 
             services.AddScoped<TokenService>();
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddScoped<IAuthorizationHandler, CharacterCreatorRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, ReviewCreatorRequirementHandler>();
 
             return services;
         }

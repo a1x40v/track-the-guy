@@ -6,7 +6,7 @@ namespace Application.DTO.Review
     {
         public Guid Id { get; set; }
         public string Body { get; set; }
-        public double Rating { get; set; }
+        public double? Rating { get; set; }
         public ReviewType? Type { get; set; }
         public string AuthorName { get; set; }
     }

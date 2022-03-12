@@ -11,6 +11,7 @@ namespace Application.MappingProfiles
             CreateMap<CreateReviewDto, Review>();
             CreateMap<Review, ReviewDto>()
                 .ForMember(d => d.AuthorName, o => o.MapFrom(s => s.Author.UserName));
+            CreateMap<UpdateReviewDto, Review>();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Application.DTO.Review.Validators
             const int MAX_BODY_LENGTH = 1000;
 
             RuleFor(x => x.Rating)
+                .NotNull()
                 .LessThanOrEqualTo(MAX_RATING_VALUE)
                 .GreaterThanOrEqualTo(MIN_RATING_VALUE);
 

@@ -1,9 +1,9 @@
 using Application.Contracts.Infrastructure;
 using Application.Features.Reviews.Requests.Commands;
 using Application.Responses;
+using Application.Services;
 using AutoMapper;
 using Domain;
-using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -15,11 +15,14 @@ namespace Application.Features.Reviews.Handlers.Commands
         private readonly ApplicationDbContext _dbContext;
         private readonly IUserAccessor _userAccessor;
         private readonly IMapper _mapper;
-        public CreateReviewCommandHandler(ApplicationDbContext dbContext, IUserAccessor userAccessor, IMapper mapper)
+        private readonly CharacterService _characterService;
+        public CreateReviewCommandHandler(ApplicationDbContext dbContext, IUserAccessor userAccessor,
+            IMapper mapper, CharacterService characterService)
         {
             _dbContext = dbContext;
             _userAccessor = userAccessor;
             _mapper = mapper;
+            _characterService = characterService;
         }
         public async Task<Result<Unit>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -34,19 +37,7 @@ namespace Application.Features.Reviews.Handlers.Commands
             _mapper.Map(request.Dto, review);
             _dbContext.Add(review);
 
-            var avgRating = character.Reviews
-                .Where(x => x.Type == review.Type)
-                .Select(x => x.Rating)
-                .Average();
-
-            if (review.Type == ReviewType.OwnFraction)
-            {
-                character.OwnFractionRating = avgRating;
-            }
-            else if (review.Type == ReviewType.EnemyFraction)
-            {
-                character.EnemyFractionRating = avgRating;
-            }
+            _characterService.UpdateRatings(character);
 
             var result = await _dbContext.SaveChangesAsync() > 0;
 
