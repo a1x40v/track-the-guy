@@ -1,0 +1,24 @@
+using Application.DTO.Review;
+using Application.Features.Reviews.Requests.Commands;
+using Application.Features.Reviews.Requests.Queries;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [Authorize]
+    public class ReviewsController : BaseApiController
+    {
+        [HttpGet("/api/characters/{characterId}/[controller]")]
+        public async Task<IActionResult> GetReviewsForCharacter(Guid characterId)
+        {
+            return HandleResult(await Mediator.Send(new GetReviewListForCharacterCommand { CharacterId = characterId }));
+        }
+
+        [HttpPost("/api/characters/{characterId}/[controller]")]
+        public async Task<IActionResult> CreateReview(Guid characterId, CreateReviewDto dto)
+        {
+            return HandleResult(await Mediator.Send(new CreateReviewCommand { CharacterId = characterId, Dto = dto }));
+        }
+    }
+}
