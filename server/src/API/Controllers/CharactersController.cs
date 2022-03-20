@@ -12,13 +12,13 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCharacters()
         {
-            return HandleResult(await Mediator.Send(new GetCharacterListRequest { }));
+            return HandleResult(await Mediator.Send(new GetCharacterListQuery { }));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCharacter(Guid id)
         {
-            return HandleResult(await Mediator.Send(new GetCharacterDetailRequest { Id = id }));
+            return HandleResult(await Mediator.Send(new GetCharacterDetailQuery { Id = id }));
         }
 
         [HttpPost]

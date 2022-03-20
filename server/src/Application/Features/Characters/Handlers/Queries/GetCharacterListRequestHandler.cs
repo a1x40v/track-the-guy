@@ -9,16 +9,16 @@ using Persistence;
 
 namespace Application.Features.Characters.Handlers.Queries
 {
-    public class GetCharacterListRequestHandler : IRequestHandler<GetCharacterListRequest, Result<List<CharacterDto>>>
+    public class GetCharacterListQueryHandler : IRequestHandler<GetCharacterListQuery, Result<List<CharacterDto>>>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-        public GetCharacterListRequestHandler(ApplicationDbContext dbContext, IMapper mapper)
+        public GetCharacterListQueryHandler(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task<Result<List<CharacterDto>>> Handle(GetCharacterListRequest request, CancellationToken cancellationToken)
+        public async Task<Result<List<CharacterDto>>> Handle(GetCharacterListQuery request, CancellationToken cancellationToken)
         {
             var characters = await _dbContext.Characters
                 .ProjectTo<CharacterDto>(_mapper.ConfigurationProvider)

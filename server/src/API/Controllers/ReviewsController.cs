@@ -12,7 +12,7 @@ namespace API.Controllers
         [HttpGet("/api/characters/{characterId}/[controller]")]
         public async Task<IActionResult> GetReviewsForCharacter(Guid characterId)
         {
-            return HandleResult(await Mediator.Send(new GetReviewListForCharacterCommand { CharacterId = characterId }));
+            return HandleResult(await Mediator.Send(new GetReviewListForCharacterQuery { CharacterId = characterId }));
         }
 
         [HttpPost("/api/characters/{characterId}/[controller]")]

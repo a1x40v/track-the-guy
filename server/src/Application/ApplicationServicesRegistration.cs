@@ -12,7 +12,7 @@ namespace Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddAutoMapper(typeof(CharacterProfile).Assembly);
-            services.AddMediatR(typeof(GetCharacterListRequest).Assembly);
+            services.AddMediatR(typeof(GetCharacterListQuery).Assembly);
 
             services.AddScoped<CharacterService, CharacterService>();
 
