@@ -10,8 +10,8 @@ namespace Persistence
         {
             services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
-                opt.LogTo(Console.WriteLine);
+                opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+                // opt.LogTo(Console.WriteLine);
             });
 
             return services;
