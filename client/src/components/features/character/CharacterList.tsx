@@ -1,10 +1,10 @@
-import { useGetCharactersQuery } from '../../../app/services/characterService';
+import { useGetCharactersQuery } from '../../../app/apiServices/characterService';
 import { CharacterItem } from './CharacterItem';
 
 export const CharacterList = () => {
   const { data, error, isLoading } = useGetCharactersQuery();
 
-  if (error) return <div>ERROR: {error}</div>;
+  if (error) return <div>ERROR</div>;
 
   if (isLoading) return <div>Loading...</div>;
 
