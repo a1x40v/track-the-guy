@@ -1,3 +1,4 @@
+using Application.Common.Behaviours;
 using Application.Features.Characters.Requests.Queries;
 using Application.MappingProfiles;
 using MediatR;
@@ -20,6 +21,8 @@ namespace Application
                     policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
             return services;
         }

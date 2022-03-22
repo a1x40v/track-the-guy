@@ -1,5 +1,6 @@
+using API.Filters;
 using Application;
-using Application.DTO.Character.Validators;
+using Application.Features.Characters.Validators;
 using FluentValidation.AspNetCore;
 using Identity;
 using Infrastructure;
@@ -19,10 +20,13 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddControllers()
+                .AddControllers(options =>
+                {
+                    options.Filters.Add(new ApiExceptionFilter());
+                })
                 .AddFluentValidation(config =>
                 {
-                    config.RegisterValidatorsFromAssemblyContaining<CreateCharacterDtoValidator>();
+                    config.RegisterValidatorsFromAssemblyContaining<CreateCharacterCommandValidator>();
                 });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

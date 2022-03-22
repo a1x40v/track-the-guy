@@ -24,16 +24,14 @@ namespace Application.Features.Characters.Handlers.Commands
 
             if (user == null) return null;
 
-            var dto = request.Dto;
-
-            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == dto.Nickname))
-                return Result<Unit>.Failure($"The character with nickname {dto.Nickname} already exists");
+            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname))
+                return Result<Unit>.Failure($"The character with nickname {request.Nickname} already exists");
 
             var character = new Character
             {
-                Nickname = dto.Nickname,
-                Race = dto.Race.Value,
-                Fraction = dto.Fraction.Value,
+                Nickname = request.Nickname,
+                Race = request.Race.Value,
+                Fraction = request.Fraction.Value,
                 Creator = user
             };
 

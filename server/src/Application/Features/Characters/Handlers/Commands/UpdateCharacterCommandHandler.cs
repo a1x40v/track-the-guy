@@ -22,10 +22,10 @@ namespace Application.Features.Characters.Handlers.Commands
 
             if (character == null) return null;
 
-            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Dto.Nickname))
-                return Result<Unit>.Failure($"The character with nickname {request.Dto.Nickname} already exists");
+            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname))
+                return Result<Unit>.Failure($"The character with nickname {request.Nickname} already exists");
 
-            _mapper.Map(request.Dto, character);
+            _mapper.Map(request, character);
 
             var result = await _dbContext.SaveChangesAsync() > 0;
 

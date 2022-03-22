@@ -2,7 +2,7 @@ using Domain.Enums;
 
 namespace Application.DTO.Review
 {
-    public class ReviewDto : IReviewDto
+    public class ReviewDto
     {
         public Guid Id { get; set; }
         public string Body { get; set; }

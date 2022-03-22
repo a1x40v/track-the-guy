@@ -30,24 +30,24 @@ namespace Application.Features.Reviews.Handlers.Commands
             // Create a new review
             var character = await _dbContext.Characters
                 .Include(x => x.Reviews)
-                .FirstOrDefaultAsync(x => x.Id == request.CharacterId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             var review = new Review { Author = user, Character = character };
-            _mapper.Map(request.Dto, review);
+            _mapper.Map(request, review);
             _dbContext.Add(review);
 
             // Update fraction rating on the character
             var ratings = character.Reviews
-                .Where(x => x.Type == request.Dto.Type)
+                .Where(x => x.Type == request.Type)
                 .Select(x => x.Rating);
 
             var avgRating = Math.Round(ratings.Average(), 1);
 
-            if (request.Dto.Type == ReviewType.OwnFraction)
+            if (request.Type == ReviewType.OwnFraction)
             {
                 character.OwnFractionRating = avgRating;
             }
-            if (request.Dto.Type == ReviewType.EnemyFraction)
+            if (request.Type == ReviewType.EnemyFraction)
             {
                 character.EnemyFractionRating = avgRating;
             }

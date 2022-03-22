@@ -1,10 +1,11 @@
+using Application.Features.Reviews.Requests.Commands;
 using FluentValidation;
 
-namespace Application.DTO.Review.Validators
+namespace Application.Features.Reviews.Validators
 {
-    public class IReviewDtoValidator : AbstractValidator<IReviewDto>
+    public class BaseReviewCommandValidator : AbstractValidator<IReviewCommand>
     {
-        public IReviewDtoValidator()
+        public BaseReviewCommandValidator()
         {
             const double MIN_RATING_VALUE = -10.0;
             const double MAX_RATING_VALUE = 10.0;

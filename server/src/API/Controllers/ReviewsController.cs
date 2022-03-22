@@ -1,4 +1,3 @@
-using Application.DTO.Review;
 using Application.Features.Reviews.Requests.Commands;
 using Application.Features.Reviews.Requests.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -16,16 +15,16 @@ namespace API.Controllers
         }
 
         [HttpPost("/api/characters/{characterId}/[controller]")]
-        public async Task<IActionResult> CreateReview(Guid characterId, CreateReviewDto dto)
+        public async Task<IActionResult> CreateReview(Guid id, CreateReviewCommand command)
         {
-            return HandleResult(await Mediator.Send(new CreateReviewCommand { CharacterId = characterId, Dto = dto }));
+            return HandleResult(await Mediator.Send(command));
         }
 
         [Authorize("IsReviewAuthor")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReview(Guid id, UpdateReviewDto dto)
+        public async Task<IActionResult> UpdateReview(Guid id, UpdateReviewCommand command)
         {
-            return HandleResult(await Mediator.Send(new UpdateReviewCommand { Id = id, Dto = dto }));
+            return HandleResult(await Mediator.Send(command));
         }
     }
 }

@@ -1,4 +1,5 @@
 using Application.DTO.Review;
+using Application.Features.Reviews.Requests.Commands;
 using AutoMapper;
 using Domain;
 
@@ -8,10 +9,10 @@ namespace Application.MappingProfiles
     {
         public ReviewProfile()
         {
-            CreateMap<CreateReviewDto, Review>();
+            CreateMap<CreateReviewCommand, Review>();
             CreateMap<Review, ReviewDto>()
                 .ForMember(d => d.AuthorName, o => o.MapFrom(s => s.Author.UserName));
-            CreateMap<UpdateReviewDto, Review>();
+            CreateMap<CreateReviewCommand, Review>();
         }
     }
 }

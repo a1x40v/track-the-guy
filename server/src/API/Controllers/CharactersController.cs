@@ -1,4 +1,3 @@
-using Application.DTO.Character;
 using Application.Features.Characters.Requests.Commands;
 using Application.Features.Characters.Requests.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -22,16 +21,16 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCharacter(CreateCharacterDto dto)
+        public async Task<IActionResult> CreateCharacter(CreateCharacterCommand command)
         {
-            return HandleResult(await Mediator.Send(new CreateCharacterCommand { Dto = dto }));
+            return HandleResult(await Mediator.Send(command));
         }
 
         [Authorize("IsCharacterCreator")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCharacter(UpdateCharacterDto dto, Guid id)
+        public async Task<IActionResult> UpdateCharacter(UpdateCharacterCommand command, Guid id)
         {
-            return HandleResult(await Mediator.Send(new UpdateCharacterCommand { Id = id, Dto = dto }));
+            return HandleResult(await Mediator.Send(command));
         }
 
         [Authorize("IsAdmin")]

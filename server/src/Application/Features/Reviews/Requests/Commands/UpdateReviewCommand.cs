@@ -1,12 +1,14 @@
-using Application.DTO.Review;
 using Application.Responses;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Features.Reviews.Requests.Commands
 {
-    public class UpdateReviewCommand : IRequest<Result<Unit>>
+    public class UpdateReviewCommand : IRequest<Result<Unit>>, IReviewCommand
     {
         public Guid Id { get; set; }
-        public UpdateReviewDto Dto { get; set; }
+        public string Body { get; set; }
+        public double? Rating { get; set; }
+        public ReviewType? Type { get; set; }
     }
 }

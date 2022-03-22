@@ -27,7 +27,7 @@ namespace Application.Features.Reviews.Handlers.Commands
 
             if (review == null) return null;
 
-            _mapper.Map(request.Dto, review);
+            _mapper.Map(request, review);
 
             // Update fraction ratings on the character
             var character = review.Character;
