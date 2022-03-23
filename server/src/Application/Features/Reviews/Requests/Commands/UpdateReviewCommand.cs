@@ -1,10 +1,9 @@
-using Application.Responses;
 using Domain.Enums;
 using MediatR;
 
 namespace Application.Features.Reviews.Requests.Commands
 {
-    public class UpdateReviewCommand : IRequest<Result<Unit>>, IReviewCommand
+    public class UpdateReviewCommand : IRequest, IReviewCommand
     {
         public Guid Id { get; set; }
         public string Body { get; set; }

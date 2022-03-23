@@ -1,6 +1,6 @@
+using Application.Common.Exceptions;
 using Application.Contracts.Infrastructure;
 using Application.Features.Reviews.Requests.Commands;
-using Application.Responses;
 using AutoMapper;
 using Domain;
 using Domain.Enums;
@@ -10,7 +10,7 @@ using Persistence;
 
 namespace Application.Features.Reviews.Handlers.Commands
 {
-    public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, Result<Unit>>
+    public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IUserAccessor _userAccessor;
@@ -22,15 +22,19 @@ namespace Application.Features.Reviews.Handlers.Commands
             _userAccessor = userAccessor;
             _mapper = mapper;
         }
-        public async Task<Result<Unit>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
-            if (user == null) return null;
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(Character), request.CharacterId);
+            }
 
             // Create a new review
             var character = await _dbContext.Characters
                 .Include(x => x.Reviews)
-                .FirstOrDefaultAsync(x => x.Id == request.Id);
+                .FirstOrDefaultAsync(x => x.Id == request.CharacterId);
 
             var review = new Review { Author = user, Character = character };
             _mapper.Map(request, review);
@@ -55,7 +59,12 @@ namespace Application.Features.Reviews.Handlers.Commands
             // Save to the DB
             var result = await _dbContext.SaveChangesAsync() > 0;
 
-            return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to create review");
+            if (!result)
+            {
+                throw new DatabaseException("Failed to create a review");
+            }
+
+            return Unit.Value;
         }
     }
 }

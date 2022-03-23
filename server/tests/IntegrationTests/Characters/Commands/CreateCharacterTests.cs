@@ -1,4 +1,3 @@
-using System;
 using Application.Features.Characters.Requests.Commands;
 using FluentAssertions;
 using FluentValidation;
@@ -13,7 +12,7 @@ namespace IntegrationTests.Characters.Commands
         [Test]
         public void ShouldRequireMinimumFields()
         {
-            var command = new CreateCharacterCommand { Id = Guid.NewGuid(), Nickname = "Nick" };
+            var command = new CreateCharacterCommand();
 
             FluentActions.Awaiting(() => SendAsync(command))
               .Should().ThrowAsync<ValidationException>();

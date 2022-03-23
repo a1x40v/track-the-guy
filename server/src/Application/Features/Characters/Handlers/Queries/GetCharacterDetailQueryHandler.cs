@@ -1,6 +1,5 @@
 using Application.DTO.Character;
 using Application.Features.Characters.Requests.Queries;
-using Application.Responses;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -9,7 +8,7 @@ using Persistence;
 
 namespace Application.Features.Characters.Handlers.Queries
 {
-    public class GetCharacterDetailQueryHandler : IRequestHandler<GetCharacterDetailQuery, Result<CharacterDto>>
+    public class GetCharacterDetailQueryHandler : IRequestHandler<GetCharacterDetailQuery, CharacterDetailVm>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -18,13 +17,13 @@ namespace Application.Features.Characters.Handlers.Queries
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task<Result<CharacterDto>> Handle(GetCharacterDetailQuery request, CancellationToken cancellationToken)
+        public async Task<CharacterDetailVm> Handle(GetCharacterDetailQuery request, CancellationToken cancellationToken)
         {
             var character = await _dbContext.Characters
                 .ProjectTo<CharacterDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
 
-            return Result<CharacterDto>.Success(character);
+            return new CharacterDetailVm { Character = character };
         }
     }
 }

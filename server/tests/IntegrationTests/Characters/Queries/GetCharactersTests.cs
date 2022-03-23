@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTO.Character;
 using Application.Features.Characters.Requests.Queries;
-using Application.Responses;
 using Domain;
 using Domain.Enums;
 using FluentAssertions;
@@ -38,12 +37,11 @@ namespace IntegrationTests.Characters.Queries
             var query = new GetCharacterListQuery();
 
             // Act
-            Result<List<CharacterDto>> result = await SendAsync(query);
+            CharacterListVm result = await SendAsync(query);
 
             // Assert
-            result.IsSuccess.Should().BeTrue();
-            result.Value.Should().NotBeNull();
-            result.Value.Should().HaveCount(1);
+            result.Should().NotBeNull();
+            result.Characters.Should().HaveCount(1);
         }
     }
 }

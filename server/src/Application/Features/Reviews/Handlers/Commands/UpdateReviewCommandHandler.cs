@@ -1,6 +1,7 @@
+using Application.Common.Exceptions;
 using Application.Features.Reviews.Requests.Commands;
-using Application.Responses;
 using AutoMapper;
+using Domain;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using Persistence;
 
 namespace Application.Features.Reviews.Handlers.Commands
 {
-    public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, Result<Unit>>
+    public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ namespace Application.Features.Reviews.Handlers.Commands
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task<Result<Unit>> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
             // Update the review
             var review = await _dbContext.Reviews
@@ -25,7 +26,10 @@ namespace Application.Features.Reviews.Handlers.Commands
                 .ThenInclude(x => x.Reviews)
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
 
-            if (review == null) return null;
+            if (review == null)
+            {
+                throw new NotFoundException(nameof(Review), request.Id);
+            }
 
             _mapper.Map(request, review);
 
@@ -57,7 +61,12 @@ namespace Application.Features.Reviews.Handlers.Commands
             // Save to the DB
             var result = await _dbContext.SaveChangesAsync() > 0;
 
-            return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to update review");
+            if (!result)
+            {
+                throw new DatabaseException("Failed to update a review");
+            }
+
+            return Unit.Value;
         }
     }
 }

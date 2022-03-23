@@ -12,7 +12,7 @@ namespace Application.MappingProfiles
             CreateMap<CreateReviewCommand, Review>();
             CreateMap<Review, ReviewDto>()
                 .ForMember(d => d.AuthorName, o => o.MapFrom(s => s.Author.UserName));
-            CreateMap<CreateReviewCommand, Review>();
+            CreateMap<UpdateReviewCommand, Review>();
         }
     }
 }

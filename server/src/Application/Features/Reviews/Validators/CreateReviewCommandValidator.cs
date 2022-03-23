@@ -8,6 +8,8 @@ namespace Application.Features.Reviews.Validators
         public CreateReviewCommandValidator()
         {
             Include(new BaseReviewCommandValidator());
+
+            RuleFor(x => x.CharacterId).NotEmpty();
         }
     }
 }

@@ -17,17 +17,13 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto dto)
         {
-            var result = await _authService.Login(dto);
-
-            return result.IsSuccess ? Ok(result.Value) : Unauthorized(result.Error);
+            return await _authService.Login(dto);
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
         {
-            var result = await _authService.Register(dto);
-
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return await _authService.Register(dto);
         }
     }
 }

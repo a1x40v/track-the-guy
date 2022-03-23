@@ -1,7 +1,8 @@
+using Application.Common.Exceptions;
 using Application.Contracts.Identity;
 using Application.DTO.Account;
-using Application.Responses;
 using Domain;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,28 +28,35 @@ namespace Identity.Services
                 IsAdmin = user.IsAdmin
             };
         }
-        public async Task<Result<UserDto>> Login(LoginDto dto)
+        public async Task<UserDto> Login(LoginDto dto)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-            if (user == null) return Result<UserDto>.Failure("Wrong email or password");
+            if (user == null)
+            {
+                throw new AuthException("Wrong email or password.");
+            }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
 
-            return result.Succeeded ?
-                Result<UserDto>.Success(CreateUserObject(user)) :
-                Result<UserDto>.Failure("Wrong email or password");
+            if (!result.Succeeded)
+            {
+                throw new AuthException("Wrong email or password.");
+            }
+
+            return CreateUserObject(user);
         }
 
-        public async Task<Result<UserDto>> Register(RegisterDto dto)
+        public async Task<UserDto> Register(RegisterDto dto)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == dto.Email))
             {
-                return Result<UserDto>.Failure("Email is taken");
+                throw new ValidationException(new[] { new ValidationFailure("Email", "Email is taken") });
             }
+
             if (await _userManager.Users.AnyAsync(x => x.UserName == dto.Username))
             {
-                return Result<UserDto>.Failure("Username is taken");
+                throw new ValidationException(new[] { new ValidationFailure("Username", "Username is taken") });
             }
 
             var user = new AppUser
@@ -60,9 +68,12 @@ namespace Identity.Services
 
             var result = await _userManager.CreateAsync(user, dto.Password);
 
-            return result.Succeeded ?
-                Result<UserDto>.Success(CreateUserObject(user)) :
-                Result<UserDto>.Failure("Failed to register");
+            if (!result.Succeeded)
+            {
+                throw new DatabaseException("Failed to register the user");
+            }
+
+            return CreateUserObject(user);
         }
     }
 }

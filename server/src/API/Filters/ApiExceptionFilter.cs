@@ -16,6 +16,8 @@ namespace API.Filters
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
+                { typeof(DatabaseException), HandleDatabaseException},
+                { typeof(AuthException), HandleAuthException}
             };
         }
 
@@ -40,6 +42,9 @@ namespace API.Filters
 
         private void HandleUnknownException(ExceptionContext context)
         {
+            // TODO
+            Console.WriteLine(context.Exception.Message);
+
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
@@ -81,6 +86,44 @@ namespace API.Filters
             };
 
             context.Result = new NotFoundObjectResult(details);
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleDatabaseException(ExceptionContext context)
+        {
+            var exception = context.Exception as DatabaseException;
+
+            var details = new ProblemDetails()
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                Title = "The database is temporarily unavailable.",
+                Detail = exception.Message
+            };
+
+            context.Result = new ObjectResult(details)
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleAuthException(ExceptionContext context)
+        {
+            var exception = context.Exception as AuthException;
+
+            var details = new ProblemDetails()
+            {
+                Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
+                Title = "The request is unauthorized.",
+                Detail = exception.Message
+            };
+
+            context.Result = new ObjectResult(details)
+            {
+                StatusCode = StatusCodes.Status401Unauthorized
+            };
 
             context.ExceptionHandled = true;
         }

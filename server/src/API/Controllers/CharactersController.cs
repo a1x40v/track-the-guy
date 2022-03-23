@@ -1,3 +1,4 @@
+using Application.DTO.Character;
 using Application.Features.Characters.Requests.Commands;
 using Application.Features.Characters.Requests.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -5,39 +6,47 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class CharactersController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllCharacters()
+        public async Task<ActionResult<CharacterListVm>> GetAllCharacters()
         {
-            return HandleResult(await Mediator.Send(new GetCharacterListQuery { }));
+            return await Mediator.Send(new GetCharacterListQuery());
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCharacter(Guid id)
+        public async Task<ActionResult<CharacterDetailVm>> GetCharacter(Guid id)
         {
-            return HandleResult(await Mediator.Send(new GetCharacterDetailQuery { Id = id }));
+            return await Mediator.Send(new GetCharacterDetailQuery { Id = id });
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCharacter(CreateCharacterCommand command)
+        public async Task<ActionResult> CreateCharacter(CreateCharacterCommand command)
         {
-            return HandleResult(await Mediator.Send(command));
+            await Mediator.Send(command);
+
+            return NoContent();
         }
 
         [Authorize("IsCharacterCreator")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCharacter(UpdateCharacterCommand command, Guid id)
+        public async Task<ActionResult> UpdateCharacter(UpdateCharacterCommand command, Guid id)
         {
-            return HandleResult(await Mediator.Send(command));
+            if (id != command.Id) return BadRequest();
+
+            await Mediator.Send(command);
+
+            return NoContent();
         }
 
         [Authorize("IsAdmin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCharacter(Guid id)
+        public async Task<ActionResult> DeleteCharacter(Guid id)
         {
-            return HandleResult(await Mediator.Send(new DeleteCharacterCommand { Id = id }));
+            await Mediator.Send(new DeleteCharacterCommand { Id = id });
+
+            return NoContent();
         }
     }
 }

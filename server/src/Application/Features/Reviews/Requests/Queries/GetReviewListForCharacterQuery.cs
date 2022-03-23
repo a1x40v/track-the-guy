@@ -1,10 +1,9 @@
 using Application.DTO.Review;
-using Application.Responses;
 using MediatR;
 
 namespace Application.Features.Reviews.Requests.Queries
 {
-    public class GetReviewListForCharacterQuery : IRequest<Result<List<ReviewDto>>>
+    public class GetReviewListForCharacterQuery : IRequest<ReviewListForCharacterVm>
     {
         public Guid CharacterId { get; set; }
     }
