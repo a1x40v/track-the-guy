@@ -11,7 +11,7 @@ export const CharacterList = () => {
   if (data)
     return (
       <ul>
-        {data.map((char) => (
+        {data.characters.map((char) => (
           <li key={char.id}>
             <CharacterItem character={char} />
           </li>

@@ -25,3 +25,7 @@ export interface Character {
   fraction: CharacterFraction;
   creatorName: string;
 }
+
+export interface GetCharacterListVm {
+  characters: Character[];
+}
