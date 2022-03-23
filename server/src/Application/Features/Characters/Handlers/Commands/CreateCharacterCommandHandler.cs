@@ -25,7 +25,7 @@ namespace Application.Features.Characters.Handlers.Commands
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(Character), request.Id);
+                throw new NotFoundException($"Cannot find current user with nickname '{_userAccessor.GetUsername()}'");
             }
 
             if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname))

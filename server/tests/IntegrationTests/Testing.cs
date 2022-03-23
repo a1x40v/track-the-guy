@@ -2,8 +2,11 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using API;
+using Application.Contracts.Infrastructure;
+using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +22,8 @@ namespace IntegrationTests
     [SetUpFixture]
     public class Testing
     {
+        public static readonly string CurrentUserUsername = "username";
+
         private static IConfiguration _configuration;
         private static IServiceScopeFactory _scopeFactory;
         private static Checkpoint _checkpoint;
@@ -48,23 +53,27 @@ namespace IntegrationTests
 
             startup.ConfigureServices(services);
 
+            services.AddSingleton(Mock.Of<IUserAccessor>(x =>
+                x.GetUsername() == CurrentUserUsername
+            ));
+
             _scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
+
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.EnsureCreated();
+            }
 
             _checkpoint = new Checkpoint
             {
                 SchemasToInclude = new[]
-                {
+                                       {
                     "public"
                 },
                 DbAdapter = DbAdapter.Postgres
             };
 
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-                context.Database.EnsureCreated();
-            }
         }
 
         public static async Task ResetState()
@@ -75,6 +84,16 @@ namespace IntegrationTests
 
                 await _checkpoint.Reset(conn);
             }
+        }
+
+        public static async Task<TEntity> FindAsync<TEntity>(Guid id)
+            where TEntity : class
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            return await context.FindAsync<TEntity>(id);
         }
 
         public static async Task AddAsync<TEntity>(TEntity entity)
