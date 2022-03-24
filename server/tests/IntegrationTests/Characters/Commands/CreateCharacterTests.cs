@@ -21,27 +21,23 @@ namespace IntegrationTests.Characters.Commands
         }
 
         [Test]
-        public async Task ShouldRequireUniqueTitle()
+        public async Task ShouldRequireUniqueNickname()
         {
-            await AddAsync(new AppUser
-            {
-                Id = Guid.NewGuid().ToString(),
-                Email = "t@test.com",
-                UserName = CurrentUserUsername
-            });
+            await RunAsDefaultUserAsync();
+            const string NICKNAME = "Nick";
 
             var commandA = new CreateCharacterCommand
             {
-                Id = Guid.Parse("69d78bae-1493-4752-bad1-ec595806e3ca"),
-                Nickname = "Nick",
+                Id = Guid.NewGuid(),
+                Nickname = NICKNAME,
                 Fraction = CharacterFraction.Horde,
                 Race = CharacterRace.Tauren
             };
 
             var commandB = new CreateCharacterCommand
             {
-                Id = Guid.Parse("69d78bae-1493-4752-bad1-ec595806e3cf"),
-                Nickname = "Nick",
+                Id = Guid.NewGuid(),
+                Nickname = NICKNAME,
                 Fraction = CharacterFraction.Alliance,
                 Race = CharacterRace.Gnome
             };
@@ -49,6 +45,28 @@ namespace IntegrationTests.Characters.Commands
             await SendAsync(commandA);
 
             Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandB));
+        }
+
+        [Test]
+        public async Task ShouldCreateCharacter()
+        {
+            await RunAsDefaultUserAsync();
+
+            var characterId = Guid.NewGuid();
+            var command = new CreateCharacterCommand
+            {
+                Id = characterId,
+                Nickname = "Nicko",
+                Race = CharacterRace.Orc,
+                Fraction = CharacterFraction.Horde
+            };
+
+            await SendAsync(command);
+
+            var character = await FindAsync<Character>(characterId);
+
+            Assert.NotNull(character);
+            Assert.AreEqual(character.Id, characterId);
         }
     }
 }

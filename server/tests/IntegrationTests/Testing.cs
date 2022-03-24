@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using API;
 using Application.Contracts.Infrastructure;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Npgsql;
 using NUnit.Framework;
@@ -22,11 +22,10 @@ namespace IntegrationTests
     [SetUpFixture]
     public class Testing
     {
-        public static readonly string CurrentUserUsername = "username";
-
         private static IConfiguration _configuration;
         private static IServiceScopeFactory _scopeFactory;
         private static Checkpoint _checkpoint;
+        public static string _currentUserUsername;
 
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
@@ -46,6 +45,7 @@ namespace IntegrationTests
 
             var startup = new Startup(_configuration);
 
+            // Mocking IWebHostEnvironment service
             services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
                 w.ApplicationName == "API" &&
                 w.EnvironmentName == "Development"
@@ -53,8 +53,14 @@ namespace IntegrationTests
 
             startup.ConfigureServices(services);
 
-            services.AddSingleton(Mock.Of<IUserAccessor>(x =>
-                x.GetUsername() == CurrentUserUsername
+            // Replace service registration for IUserAccessor
+            var userAccessorServiceDescriptor = services.FirstOrDefault(d =>
+                d.ServiceType == typeof(IUserAccessor));
+
+            services.Remove(userAccessorServiceDescriptor);
+
+            services.AddScoped(provider => Mock.Of<IUserAccessor>(x =>
+                x.GetUsername() == _currentUserUsername
             ));
 
             _scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
@@ -84,6 +90,33 @@ namespace IntegrationTests
 
                 await _checkpoint.Reset(conn);
             }
+
+            _currentUserUsername = null;
+        }
+
+        public static async Task<string> RunAsDefaultUserAsync()
+        {
+            return await RunAsUserAsync("tester@test.com", "Testuser", "Pa$$w0rd");
+        }
+
+        public static async Task<string> RunAsUserAsync(string email, string username, string password)
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var userManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+
+            var user = new AppUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email,
+                UserName = username,
+            };
+
+            var result = await userManager.CreateAsync(user, password);
+
+            _currentUserUsername = user.UserName;
+
+            return _currentUserUsername;
         }
 
         public static async Task<TEntity> FindAsync<TEntity>(Guid id)

@@ -11,6 +11,8 @@ namespace Application.Features.Reviews.Validators
             const double MAX_RATING_VALUE = 10.0;
             const int MAX_BODY_LENGTH = 1000;
 
+            RuleFor(x => x.Id).NotEmpty();
+
             RuleFor(x => x.Rating)
                 .NotNull()
                 .LessThanOrEqualTo(MAX_RATING_VALUE)

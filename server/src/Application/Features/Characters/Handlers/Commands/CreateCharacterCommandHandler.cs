@@ -25,7 +25,7 @@ namespace Application.Features.Characters.Handlers.Commands
 
             if (user == null)
             {
-                throw new NotFoundException($"Cannot find current user with nickname '{_userAccessor.GetUsername()}'");
+                throw new NotFoundException($"Cannot find current user with username '{_userAccessor.GetUsername()}'");
             }
 
             if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname))
@@ -36,6 +36,7 @@ namespace Application.Features.Characters.Handlers.Commands
 
             var character = new Character
             {
+                Id = request.Id,
                 Nickname = request.Nickname,
                 Race = request.Race.Value,
                 Fraction = request.Fraction.Value,
