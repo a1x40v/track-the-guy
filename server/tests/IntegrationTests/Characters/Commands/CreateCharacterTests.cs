@@ -48,6 +48,12 @@ namespace IntegrationTests.Characters.Commands
         }
 
         [Test]
+        public async Task ShouldRequireValidFractionForRace()
+        {
+            
+        }
+
+        [Test]
         public async Task ShouldCreateCharacter()
         {
             await RunAsDefaultUserAsync();
