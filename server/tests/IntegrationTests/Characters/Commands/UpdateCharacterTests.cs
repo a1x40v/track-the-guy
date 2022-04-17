@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Common.Exceptions;
 using Application.Features.Characters.Requests.Commands;
@@ -61,6 +60,52 @@ namespace IntegrationTests.Characters.Commands
             var ex = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(command));
 
             Assert.That(ex.Errors, Contains.Key("Nickname"));
+        }
+
+        [Test]
+        public async Task ShouldRequireValidFractionForRace()
+        {
+            await RunAsDefaultUserAsync();
+
+            var hordeId = Guid.NewGuid();
+            await SendAsync(new CreateCharacterCommand
+            {
+                Id = hordeId,
+                Nickname = "Nick",
+                Fraction = CharacterFraction.Horde,
+                Race = CharacterRace.Orc
+            });
+
+            var allyId =  Guid.NewGuid();
+            await SendAsync(new CreateCharacterCommand
+            {
+                Id = allyId,
+                Nickname = "Bob",
+                Fraction = CharacterFraction.Alliance,
+                Race = CharacterRace.Human
+            });
+
+            var commandHorde = new UpdateCharacterCommand
+            {
+                Id = hordeId,
+                Nickname = "Nick",
+                Fraction = CharacterFraction.Horde,
+                Race = CharacterRace.Human
+            };
+
+            var commandAlly = new UpdateCharacterCommand
+            {
+                Id = allyId,
+                Nickname = "Bob",
+                Fraction = CharacterFraction.Alliance,
+                Race = CharacterRace.Orc
+            };
+
+            var hordeEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandHorde));
+            var allyEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandAlly));
+
+            Assert.That(hordeEx.Errors, Contains.Key("Race"));
+            Assert.That(allyEx.Errors, Contains.Key("Race"));
         }
 
         [Test]

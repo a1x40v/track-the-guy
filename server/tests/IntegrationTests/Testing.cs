@@ -74,7 +74,7 @@ namespace IntegrationTests
             _checkpoint = new Checkpoint
             {
                 SchemasToInclude = new[]
-                                       {
+                {
                     "public"
                 },
                 DbAdapter = DbAdapter.Postgres

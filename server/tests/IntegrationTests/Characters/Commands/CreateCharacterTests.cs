@@ -50,7 +50,29 @@ namespace IntegrationTests.Characters.Commands
         [Test]
         public async Task ShouldRequireValidFractionForRace()
         {
-            
+            await RunAsDefaultUserAsync();
+
+            var commandHorde = new CreateCharacterCommand
+            {
+                Id = Guid.NewGuid(),
+                Nickname = "Nick",
+                Fraction = CharacterFraction.Horde,
+                Race = CharacterRace.Human
+            };
+
+            var commandAlly = new CreateCharacterCommand
+            {
+                Id = Guid.NewGuid(),
+                Nickname = "Bob",
+                Fraction = CharacterFraction.Alliance,
+                Race = CharacterRace.Orc
+            };
+
+            var hordeEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandHorde));
+            var allyEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandAlly));
+
+            Assert.That(hordeEx.Errors, Contains.Key("Race"));
+            Assert.That(allyEx.Errors, Contains.Key("Race"));
         }
 
         [Test]
