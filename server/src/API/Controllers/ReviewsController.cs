@@ -35,5 +35,16 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [Authorize("IsReviewAuthor")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteReview(Guid id, DeleteReviewCommand command)
+        {
+            if (id != command.Id) return BadRequest();
+
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }
