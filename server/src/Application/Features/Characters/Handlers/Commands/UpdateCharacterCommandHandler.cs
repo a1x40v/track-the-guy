@@ -27,7 +27,7 @@ namespace Application.Features.Characters.Handlers.Commands
                 throw new NotFoundException(nameof(Character), request.Id);
             }
 
-            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname))
+            if (await _dbContext.Characters.AnyAsync(x => x.Nickname == request.Nickname && x.Id != request.Id))
             {
                 var failure = new ValidationFailure("Nickname", $"The character with nickname '{request.Nickname}' already exists");
                 throw new ValidationException(new[] { failure });
