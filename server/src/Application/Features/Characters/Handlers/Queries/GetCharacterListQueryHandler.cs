@@ -1,9 +1,9 @@
+using Application.Common.Pagination;
 using Application.DTO.Character;
 using Application.Features.Characters.Requests.Queries;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Features.Characters.Handlers.Queries
@@ -19,11 +19,11 @@ namespace Application.Features.Characters.Handlers.Queries
         }
         public async Task<CharacterListVm> Handle(GetCharacterListQuery request, CancellationToken cancellationToken)
         {
-            var characters = await _dbContext.Characters
-                .ProjectTo<CharacterDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var query = _dbContext.Characters
+                .ProjectTo<CharacterDto>(_mapper.ConfigurationProvider);
+            var pagination = await Pagination<CharacterDto>.CreateAsync(query, request.Pagination);
 
-            return new CharacterListVm { Characters = characters };
+            return new CharacterListVm { Characters = pagination.Items, Pagination = pagination.Result };
         }
     }
 }

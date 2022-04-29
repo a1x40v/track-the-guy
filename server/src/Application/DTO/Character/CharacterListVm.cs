@@ -1,7 +1,10 @@
+using Application.Common.Pagination;
+
 namespace Application.DTO.Character
 {
     public class CharacterListVm
     {
-        public IList<CharacterDto> Characters { get; set; }
+        public IEnumerable<CharacterDto> Characters { get; set; }
+        public PaginationResult Pagination { get; set; }
     }
 }

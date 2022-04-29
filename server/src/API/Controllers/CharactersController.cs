@@ -1,3 +1,4 @@
+using Application.Common.Pagination;
 using Application.DTO.Character;
 using Application.Features.Characters.Requests.Commands;
 using Application.Features.Characters.Requests.Queries;
@@ -10,9 +11,9 @@ namespace API.Controllers
     public class CharactersController : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<CharacterListVm>> GetAllCharacters()
+        public async Task<ActionResult<CharacterListVm>> GetAllCharacters([FromQuery] PaginationParams param)
         {
-            return await Mediator.Send(new GetCharacterListQuery());
+            return await Mediator.Send(new GetCharacterListQuery { Pagination = param });
         }
 
         [HttpGet("{id}")]

@@ -8,6 +8,8 @@ namespace Persistence.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Character> builder)
         {
+            builder.HasIndex(c => c.Nickname);
+
             builder.Property(c => c.Nickname)
                 .HasMaxLength(12)
                 .IsRequired();
