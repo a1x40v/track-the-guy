@@ -1,3 +1,5 @@
+import { Pagination } from './Pagination';
+
 export enum CharacterFraction {
   Horde = 0,
   Alliance = 1,
@@ -28,4 +30,5 @@ export interface Character {
 
 export interface GetCharacterListVm {
   characters: Character[];
+  pagination: Pagination;
 }
