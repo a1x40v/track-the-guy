@@ -28,15 +28,12 @@ export const CharactersDashboard: React.FC = () => {
   };
 
   return (
-    <>
-      <span>{currentPage}</span>
-      <InfiniteScroll
-        initialLoad={true}
-        hasMore={totalPages === null || currentPage < totalPages - 1}
-        loadMore={handleGetNext}
-      >
-        <CharacterList items={characters} />
-      </InfiniteScroll>
-    </>
+    <InfiniteScroll
+      initialLoad={true}
+      hasMore={totalPages === null || currentPage < totalPages - 1}
+      loadMore={handleGetNext}
+    >
+      <CharacterList items={characters} />
+    </InfiniteScroll>
   );
 };

@@ -9,7 +9,7 @@ import LoginForm from './components/features/auth/LoginForm';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="container mx-auto">
         <MainNav />
         <Routes>
           <Route path="/" element={<HomePage />} />

@@ -7,9 +7,9 @@ type Props = {
 
 const CharacterList: React.FC<Props> = ({ items }) => {
   return (
-    <ul>
+    <ul className="flex flex-col">
       {items.map((char) => (
-        <li key={char.id}>
+        <li key={char.id} className="border-b-2 border-black">
           <CharacterItem character={char} />
         </li>
       ))}
