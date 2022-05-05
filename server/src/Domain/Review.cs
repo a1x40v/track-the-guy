@@ -1,8 +1,9 @@
+using Domain.Common;
 using Domain.Enums;
 
 namespace Domain
 {
-    public class Review
+    public class Review : BaseDomainEntity
     {
         public Guid Id { get; set; }
         public string Body { get; set; }

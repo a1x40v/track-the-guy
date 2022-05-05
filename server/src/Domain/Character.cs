@@ -1,8 +1,9 @@
+using Domain.Common;
 using Domain.Enums;
 
 namespace Domain
 {
-    public class Character
+    public class Character : BaseDomainEntity
     {
         public Guid Id { get; set; }
         public string Nickname { get; set; }

@@ -5,6 +5,8 @@ namespace Application.DTO.Character
     public class CharacterDto
     {
         public Guid Id { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModifiedDate { get; set; }
         public string Nickname { get; set; }
         public double OwnFractionRating { get; set; }
         public double EnemyFractionRating { get; set; }
