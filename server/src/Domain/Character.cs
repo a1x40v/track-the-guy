@@ -7,6 +7,7 @@ namespace Domain
     {
         public Guid Id { get; set; }
         public string Nickname { get; set; }
+        public bool IsMale { get; set; }
         public double OwnFractionRating { get; set; }
         public double EnemyFractionRating { get; set; }
         public CharacterRace Race { get; set; }

@@ -19,7 +19,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = "Nick",
                 Race = CharacterRace.Troll,
-                Fraction = CharacterFraction.Horde
+                Fraction = CharacterFraction.Horde,
+                IsMale = true
             };
 
             Assert.ThrowsAsync<NotFoundException>(async () => await SendAsync(command));
@@ -37,7 +38,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = NICKNAME,
                 Race = CharacterRace.Orc,
-                Fraction = CharacterFraction.Horde
+                Fraction = CharacterFraction.Horde,
+                IsMale = true
             });
 
             var secondCharId = Guid.NewGuid();
@@ -46,7 +48,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = secondCharId,
                 Nickname = "Secondchar",
                 Race = CharacterRace.Tauren,
-                Fraction = CharacterFraction.Horde
+                Fraction = CharacterFraction.Horde,
+                IsMale = true
             });
 
             var command = new UpdateCharacterCommand
@@ -54,7 +57,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = secondCharId,
                 Nickname = NICKNAME,
                 Race = CharacterRace.BloodElf,
-                Fraction = CharacterFraction.Horde
+                Fraction = CharacterFraction.Horde,
+                IsMale = true
             };
 
             var ex = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(command));
@@ -73,16 +77,18 @@ namespace IntegrationTests.Characters.Commands
                 Id = hordeId,
                 Nickname = "Nick",
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Orc
+                Race = CharacterRace.Orc,
+                IsMale = true
             });
 
-            var allyId =  Guid.NewGuid();
+            var allyId = Guid.NewGuid();
             await SendAsync(new CreateCharacterCommand
             {
                 Id = allyId,
                 Nickname = "Bob",
                 Fraction = CharacterFraction.Alliance,
-                Race = CharacterRace.Human
+                Race = CharacterRace.Human,
+                IsMale = true
             });
 
             var commandHorde = new UpdateCharacterCommand
@@ -90,7 +96,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = hordeId,
                 Nickname = "Nick",
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Human
+                Race = CharacterRace.Human,
+                IsMale = true
             };
 
             var commandAlly = new UpdateCharacterCommand
@@ -98,7 +105,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = allyId,
                 Nickname = "Bob",
                 Fraction = CharacterFraction.Alliance,
-                Race = CharacterRace.Orc
+                Race = CharacterRace.Orc,
+                IsMale = true
             };
 
             var hordeEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandHorde));
@@ -119,19 +127,22 @@ namespace IntegrationTests.Characters.Commands
                 Id = characterId,
                 Nickname = "Nick",
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Troll
+                Race = CharacterRace.Troll,
+                IsMale = true
             });
 
             var NEW_NICKNAME = "Bob";
             var NEW_FRACTION = CharacterFraction.Alliance;
             var NEW_RACE = CharacterRace.NightElf;
+            bool NEW_IS_MALE = false;
 
             await SendAsync(new UpdateCharacterCommand
             {
                 Id = characterId,
                 Nickname = NEW_NICKNAME,
                 Fraction = NEW_FRACTION,
-                Race = NEW_RACE
+                Race = NEW_RACE,
+                IsMale = NEW_IS_MALE
             });
 
             var character = await FindAsync<Character>(characterId);
@@ -139,6 +150,7 @@ namespace IntegrationTests.Characters.Commands
             Assert.AreEqual(character.Nickname, NEW_NICKNAME);
             Assert.AreEqual(character.Fraction, NEW_FRACTION);
             Assert.AreEqual(character.Race, NEW_RACE);
+            Assert.AreEqual(character.IsMale, NEW_IS_MALE);
         }
     }
 }

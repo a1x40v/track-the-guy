@@ -10,6 +10,7 @@ namespace Application.Features.Characters.Validators
         {
             RuleFor(x => x.Id).NotEmpty();
             RuleFor(x => x.Nickname).NotEmpty();
+            RuleFor(x => x.IsMale).NotNull();
             RuleFor(x => x.Race).NotNull().IsInEnum();
             RuleFor(x => x.Fraction).NotNull().IsInEnum();
 

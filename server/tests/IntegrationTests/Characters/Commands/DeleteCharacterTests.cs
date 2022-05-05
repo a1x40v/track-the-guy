@@ -32,6 +32,7 @@ namespace IntegrationTests.Characters.Commands
             {
                 Id = id,
                 Nickname = "Nick",
+                IsMale = true,
                 Race = CharacterRace.Troll,
                 Fraction = CharacterFraction.Horde
             });

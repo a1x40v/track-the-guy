@@ -31,7 +31,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = NICKNAME,
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Tauren
+                Race = CharacterRace.Tauren,
+                IsMale = true
             };
 
             var commandB = new CreateCharacterCommand
@@ -39,7 +40,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = NICKNAME,
                 Fraction = CharacterFraction.Alliance,
-                Race = CharacterRace.Gnome
+                Race = CharacterRace.Gnome,
+                IsMale = true
             };
 
             await SendAsync(commandA);
@@ -57,7 +59,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = "Nick",
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Human
+                Race = CharacterRace.Human,
+                IsMale = true
             };
 
             var commandAlly = new CreateCharacterCommand
@@ -65,7 +68,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = Guid.NewGuid(),
                 Nickname = "Bob",
                 Fraction = CharacterFraction.Alliance,
-                Race = CharacterRace.Orc
+                Race = CharacterRace.Orc,
+                IsMale = true
             };
 
             var hordeEx = Assert.ThrowsAsync<ValidationException>(async () => await SendAsync(commandHorde));
@@ -86,7 +90,8 @@ namespace IntegrationTests.Characters.Commands
                 Id = characterId,
                 Nickname = "Nicko",
                 Race = CharacterRace.Orc,
-                Fraction = CharacterFraction.Horde
+                Fraction = CharacterFraction.Horde,
+                IsMale = true
             };
 
             await SendAsync(command);

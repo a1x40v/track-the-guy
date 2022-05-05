@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Common.Pagination;
 using Application.DTO.Character;
 using Application.Features.Characters.Requests.Queries;
 using Domain;
@@ -22,6 +23,7 @@ namespace IntegrationTests.Characters.Queries
             {
                 Id = Guid.NewGuid(),
                 Nickname = "Nick",
+                IsMale = true,
                 Race = CharacterRace.Orc,
                 Fraction = CharacterFraction.Horde,
                 Reviews = new List<Review>
@@ -34,7 +36,10 @@ namespace IntegrationTests.Characters.Queries
             // Arrange
             await AddAsync(character);
 
-            var query = new GetCharacterListQuery();
+            var query = new GetCharacterListQuery
+            {
+                Pagination = new PaginationParams()
+            };
 
             // Act
             CharacterListVm result = await SendAsync(query);

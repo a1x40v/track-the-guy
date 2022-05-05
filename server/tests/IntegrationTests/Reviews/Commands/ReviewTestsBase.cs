@@ -17,7 +17,8 @@ namespace IntegrationTests.Reviews.Commands
                 Id = charId,
                 Nickname = "Nick",
                 Fraction = CharacterFraction.Horde,
-                Race = CharacterRace.Orc
+                Race = CharacterRace.Orc,
+                IsMale = true
             });
 
             return charId;
